@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Calculating pairwise scores using bullseye.</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+<script>$(document).ready(function(){
+    if (typeof $('[data-toggle="tooltip"]').tooltip === 'function') {
+        $('[data-toggle="tooltip"]').tooltip();
+    }
+    if ($('[data-toggle="popover"]').popover === 'function') {
+        $('[data-toggle="popover"]').popover();
+    }
+});
+</script>
+<style type="text/css">
+.lightable-minimal {
+border-collapse: separate;
+border-spacing: 16px 1px;
+width: 100%;
+margin-bottom: 10px;
+}
+.lightable-minimal td {
+margin-left: 5px;
+margin-right: 5px;
+}
+.lightable-minimal th {
+margin-left: 5px;
+margin-right: 5px;
+}
+.lightable-minimal thead tr:last-child th {
+border-bottom: 2px solid #00000050;
+empty-cells: hide;
+}
+.lightable-minimal tbody tr:first-child td {
+padding-top: 0.5em;
+}
+.lightable-minimal.lightable-hover tbody tr:hover {
+background-color: #f5f5f5;
+}
+.lightable-minimal.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-classic {
+border-top: 0.16em solid #111111;
+border-bottom: 0.16em solid #111111;
+width: 100%;
+margin-bottom: 10px;
+margin: 10px 5px;
+}
+.lightable-classic tfoot tr td {
+border: 0;
+}
+.lightable-classic tfoot tr:first-child td {
+border-top: 0.14em solid #111111;
+}
+.lightable-classic caption {
+color: #222222;
+}
+.lightable-classic td {
+padding-left: 5px;
+padding-right: 5px;
+color: #222222;
+}
+.lightable-classic th {
+padding-left: 5px;
+padding-right: 5px;
+font-weight: normal;
+color: #222222;
+}
+.lightable-classic thead tr:last-child th {
+border-bottom: 0.10em solid #111111;
+}
+.lightable-classic.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-classic.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-classic-2 {
+border-top: 3px double #111111;
+border-bottom: 3px double #111111;
+width: 100%;
+margin-bottom: 10px;
+}
+.lightable-classic-2 tfoot tr td {
+border: 0;
+}
+.lightable-classic-2 tfoot tr:first-child td {
+border-top: 3px double #111111;
+}
+.lightable-classic-2 caption {
+color: #222222;
+}
+.lightable-classic-2 td {
+padding-left: 5px;
+padding-right: 5px;
+color: #222222;
+}
+.lightable-classic-2 th {
+padding-left: 5px;
+padding-right: 5px;
+font-weight: normal;
+color: #222222;
+}
+.lightable-classic-2 tbody tr:last-child td {
+border-bottom: 3px double #111111;
+}
+.lightable-classic-2 thead tr:last-child th {
+border-bottom: 1px solid #111111;
+}
+.lightable-classic-2.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-classic-2.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-material {
+min-width: 100%;
+white-space: nowrap;
+table-layout: fixed;
+font-family: Roboto, sans-serif;
+border: 1px solid #EEE;
+border-collapse: collapse;
+margin-bottom: 10px;
+}
+.lightable-material tfoot tr td {
+border: 0;
+}
+.lightable-material tfoot tr:first-child td {
+border-top: 1px solid #EEE;
+}
+.lightable-material th {
+height: 56px;
+padding-left: 16px;
+padding-right: 16px;
+}
+.lightable-material td {
+height: 52px;
+padding-left: 16px;
+padding-right: 16px;
+border-top: 1px solid #eeeeee;
+}
+.lightable-material.lightable-hover tbody tr:hover {
+background-color: #f5f5f5;
+}
+.lightable-material.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-material.lightable-striped tbody td {
+border: 0;
+}
+.lightable-material.lightable-striped thead tr:last-child th {
+border-bottom: 1px solid #ddd;
+}
+.lightable-material-dark {
+min-width: 100%;
+white-space: nowrap;
+table-layout: fixed;
+font-family: Roboto, sans-serif;
+border: 1px solid #FFFFFF12;
+border-collapse: collapse;
+margin-bottom: 10px;
+background-color: #363640;
+}
+.lightable-material-dark tfoot tr td {
+border: 0;
+}
+.lightable-material-dark tfoot tr:first-child td {
+border-top: 1px solid #FFFFFF12;
+}
+.lightable-material-dark th {
+height: 56px;
+padding-left: 16px;
+padding-right: 16px;
+color: #FFFFFF60;
+}
+.lightable-material-dark td {
+height: 52px;
+padding-left: 16px;
+padding-right: 16px;
+color: #FFFFFF;
+border-top: 1px solid #FFFFFF12;
+}
+.lightable-material-dark.lightable-hover tbody tr:hover {
+background-color: #FFFFFF12;
+}
+.lightable-material-dark.lightable-striped tbody tr:nth-child(even) {
+background-color: #FFFFFF12;
+}
+.lightable-material-dark.lightable-striped tbody td {
+border: 0;
+}
+.lightable-material-dark.lightable-striped thead tr:last-child th {
+border-bottom: 1px solid #FFFFFF12;
+}
+.lightable-paper {
+width: 100%;
+margin-bottom: 10px;
+color: #444;
+}
+.lightable-paper tfoot tr td {
+border: 0;
+}
+.lightable-paper tfoot tr:first-child td {
+border-top: 1px solid #00000020;
+}
+.lightable-paper thead tr:last-child th {
+color: #666;
+vertical-align: bottom;
+border-bottom: 1px solid #00000020;
+line-height: 1.15em;
+padding: 10px 5px;
+}
+.lightable-paper td {
+vertical-align: middle;
+border-bottom: 1px solid #00000010;
+line-height: 1.15em;
+padding: 7px 5px;
+}
+.lightable-paper.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-paper.lightable-striped tbody tr:nth-child(even) {
+background-color: #00000008;
+}
+.lightable-paper.lightable-striped tbody td {
+border: 0;
+}
+</style>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Calculating pairwise scores using
+bullseye.</h1>
+
+
+
+<p><code>bullseye</code> is an R package which calculates measures of
+correlation and other association scores for pairs of variables in a
+dataset and offers visualisations of these measures in different
+layouts. The package also calculates and visualises the pairwise scores
+for different levels of a grouping variable.</p>
+<p>This vignette gives an overview of how these pairwise variable
+measures are calculated. Visualisations of these calculated measures are
+provided in the accompanying vignette.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># install.packages(&quot;palmerpenguins&quot;)</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">library</span>(bullseye)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="fu">library</span>(palmerpenguins)</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div>
+<p>Table 1 lists the different measures of association provided in the
+package with the variable types they can be used with, the package used
+for calculation, the information on whether the measure is symmetric,
+and the minimum and maximum value of the measure.</p>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>
+List of the functions available in the package for calculating different
+association measures along with the packages used for calculation.
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+name
+</th>
+<th style="text-align:left;">
+nn
+</th>
+<th style="text-align:left;">
+ff
+</th>
+<th style="text-align:left;">
+fn
+</th>
+<th style="text-align:left;">
+from
+</th>
+<th style="text-align:left;">
+range
+</th>
+<th style="text-align:left;">
+ordinal
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+pair_cor
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+cor
+</td>
+<td style="text-align:left;">
+[-1,1]
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+pair_dcor
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+energy::dcor2d
+</td>
+<td style="text-align:left;">
+[0,1]
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+pair_mine
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+minerva::mine
+</td>
+<td style="text-align:left;">
+[0,1]
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+pair_ace
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+acepack::ace
+</td>
+<td style="text-align:left;">
+[0,1]
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+pair_cancor
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+cancor
+</td>
+<td style="text-align:left;">
+[0,1]
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+pair_nmi
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+linkspotter::maxNMI
+</td>
+<td style="text-align:left;">
+[0,1]
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+pair_polychor
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+polycor::polychor
+</td>
+<td style="text-align:left;">
+[-1,1]
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+pair_polyserial
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+polycor::polyserial
+</td>
+<td style="text-align:left;">
+[-1,1]
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+pair_tauB
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+DescTools::KendalTauB
+</td>
+<td style="text-align:left;">
+[-1,1]
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+pair_tauA
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+DescTools::KendalTauA
+</td>
+<td style="text-align:left;">
+[-1,1]
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+pair_tauC
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+DescTools::StuartTauC
+</td>
+<td style="text-align:left;">
+[-1,1]
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+pair_tauW
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+DescTools::KendalW
+</td>
+<td style="text-align:left;">
+[-1,1]
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+pair_gkGamma
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+DescTools::GoodmanKruskalGamma
+</td>
+<td style="text-align:left;">
+[-1,1]
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+pair_gkTau
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+DescTools::GoodmanKruskalTau
+</td>
+<td style="text-align:left;">
+[0,1]
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+pair_uncertainty
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+DescTools::UncertCoef
+</td>
+<td style="text-align:left;">
+[0,1]
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+pair_chi
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+DescTools::ContCoef
+</td>
+<td style="text-align:left;">
+[0,1]
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+pair_scag
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+scagnostics::scagnostics
+</td>
+<td style="text-align:left;">
+[0,1]
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+</tbody>
+</table>
+<div id="calculating-correlation-and-other-association-measures" class="section level2">
+<h2>Calculating correlation and other association measures</h2>
+<p>Each of the functions in the first column of Table 1 calculates
+pairwise scores for a dataset.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>sc_dcor <span class="ot">&lt;-</span> <span class="fu">pair_dcor</span>(penguins)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">str</span>(sc_dcor)</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="co">#&gt; pairwise [10 × 6] (S3: pairwise/tbl_df/tbl/data.frame)</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="co">#&gt;  $ x        : chr [1:10] &quot;bill_depth_mm&quot; &quot;bill_length_mm&quot; &quot;bill_depth_mm&quot; &quot;body_mass_g&quot; ...</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="co">#&gt;  $ y        : chr [1:10] &quot;bill_length_mm&quot; &quot;flipper_length_mm&quot; &quot;flipper_length_mm&quot; &quot;flipper_length_mm&quot; ...</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="co">#&gt;  $ score    : chr [1:10] &quot;dcor&quot; &quot;dcor&quot; &quot;dcor&quot; &quot;dcor&quot; ...</span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="co">#&gt;  $ group    : chr [1:10] &quot;all&quot; &quot;all&quot; &quot;all&quot; &quot;all&quot; ...</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="co">#&gt;  $ value    : Named num [1:10] 0.387 0.666 0.704 0.867 0.587 ...</span></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="co">#&gt;   ..- attr(*, &quot;names&quot;)= chr [1:10] &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; ...</span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a><span class="co">#&gt;  $ pair_type: chr [1:10] &quot;nn&quot; &quot;nn&quot; &quot;nn&quot; &quot;nn&quot; ...</span></span></code></pre></div>
+<p>For example, we see that <code>pair_dcor</code> calculates the
+distance correlation for every pair of numeric variables in the
+<code>penguins</code> dataset. There are missing values in this dataset,
+all the <code>pair_</code> functions use pairwise complete observations
+by default.</p>
+<p><code>sc_dcor</code> is a tibble of class <code>pairwise</code>, with
+the two variables in columns <code>x</code> and <code>y</code> (arranged
+in alphabetical order), calculated values in the column
+<code>value</code>, and the name of the score calculated in the column
+<code>score</code>. All of the variables are numeric, hence “nn” in the
+<code>pair_type</code> column.</p>
+<p>Similarly, one can use <code>pair_nmi</code> to calculate normalised
+mutual information for numeric, factor and mixed pairs of variables.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>sc_nmi <span class="ot">&lt;-</span> <span class="fu">pair_nmi</span>(penguins)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>sc_nmi</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co">#&gt; # A tibble: 28 × 6</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt;    x                 y                 score group  value pair_type</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;             &lt;chr&gt;             &lt;chr&gt; &lt;chr&gt;  &lt;dbl&gt; &lt;chr&gt;    </span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co">#&gt;  1 bill_depth_mm     bill_length_mm    nmi   all   0.225  nn       </span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co">#&gt;  2 bill_length_mm    flipper_length_mm nmi   all   0.375  nn       </span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co">#&gt;  3 bill_depth_mm     flipper_length_mm nmi   all   0.470  nn       </span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="co">#&gt;  4 body_mass_g       flipper_length_mm nmi   all   0.581  nn       </span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co">#&gt;  5 bill_length_mm    body_mass_g       nmi   all   0.303  nn       </span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="co">#&gt;  6 bill_depth_mm     body_mass_g       nmi   all   0.443  nn       </span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="co">#&gt;  7 bill_length_mm    year              nmi   all   0.0517 nn       </span></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="co">#&gt;  8 bill_depth_mm     year              nmi   all   0.0387 nn       </span></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="co">#&gt;  9 flipper_length_mm year              nmi   all   0.0707 nn       </span></span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a><span class="co">#&gt; 10 body_mass_g       year              nmi   all   0.0445 nn       </span></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a><span class="co">#&gt; # ℹ 18 more rows</span></span></code></pre></div>
+<p>The main difference here is that factor variables are included. In
+the <code>pair_type</code> column, “ff” and “fn” indicate factor-factor
+and factor-numeric pairs.</p>
+<p>If you want more control over the measure calculated, the function
+<code>pairwise_scores</code> calculates a different score depending on
+variable types.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">pairwise_scores</span>(penguins) <span class="sc">|&gt;</span> <span class="fu">distinct</span>(score, pair_type)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 2</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co">#&gt;   score   pair_type</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;   &lt;chr&gt;    </span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co">#&gt; 1 cancor  ff       </span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co">#&gt; 2 cancor  fn       </span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co">#&gt; 3 pearson nn</span></span></code></pre></div>
+<p>As you can see, the default uses pearson’s correlation for numeric
+pairs, and canonical correlation for factor-numeric or factor-factor
+pairs. In addition polychoric correlation is used for two ordered
+factors, but there are no ordered factors in this data. Alternative
+scores may be specified using the <code>control</code> argument to
+<code>pairwise_scores</code>. The default value for this
+<code>control</code> argument is given by</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">pair_control</span>()</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="co">#&gt; $nn</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co">#&gt; [1] &quot;pair_cor&quot;</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co">#&gt; $fn</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co">#&gt; [1] &quot;pair_cancor&quot;</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co">#&gt; $oo</span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co">#&gt; [1] &quot;pair_polychor&quot;</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a><span class="co">#&gt; $ff</span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="co">#&gt; [1] &quot;pair_cancor&quot;</span></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a><span class="co">#&gt; $nnargs</span></span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a><span class="co">#&gt; NULL</span></span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a><span class="co">#&gt; $fnargs</span></span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a><span class="co">#&gt; NULL</span></span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a><span class="co">#&gt; $ooargs</span></span>
+<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a><span class="co">#&gt; NULL</span></span>
+<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a><span class="co">#&gt; $ffargs</span></span>
+<span id="cb5-24"><a href="#cb5-24" tabindex="-1"></a><span class="co">#&gt; NULL</span></span></code></pre></div>
+</div>
+<div id="calculating-multiple-measures" class="section level2">
+<h2>Calculating multiple measures</h2>
+<p>If you want for instance to compare distance correlation and mutual
+information measures in a display, two <code>pairwise</code> data
+structures can be combined:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">bind_rows</span>(sc_dcor, sc_nmi) <span class="sc">|&gt;</span> <span class="fu">arrange</span>(x,y)</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="co">#&gt; # A tibble: 38 × 6</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="co">#&gt;    x             y                 score group value pair_type</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;         &lt;chr&gt;             &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;chr&gt;    </span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="co">#&gt;  1 bill_depth_mm bill_length_mm    dcor  all   0.387 nn       </span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co">#&gt;  2 bill_depth_mm bill_length_mm    nmi   all   0.225 nn       </span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="co">#&gt;  3 bill_depth_mm body_mass_g       dcor  all   0.614 nn       </span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="co">#&gt;  4 bill_depth_mm body_mass_g       nmi   all   0.443 nn       </span></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="co">#&gt;  5 bill_depth_mm flipper_length_mm dcor  all   0.704 nn       </span></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="co">#&gt;  6 bill_depth_mm flipper_length_mm nmi   all   0.470 nn       </span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="co">#&gt;  7 bill_depth_mm island            nmi   all   0.282 fn       </span></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a><span class="co">#&gt;  8 bill_depth_mm sex               nmi   all   0.356 fn       </span></span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a><span class="co">#&gt;  9 bill_depth_mm species           nmi   all   0.493 fn       </span></span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a><span class="co">#&gt; 10 bill_depth_mm year              dcor  all   0.112 nn       </span></span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a><span class="co">#&gt; # ℹ 28 more rows</span></span></code></pre></div>
+<p>We provide another function <code>pairwise_multi</code> which
+calculates multiple association measures for every variable pair in a
+dataset. By default this function combines the results of
+<code>pair_cor</code>,
+<code>pair_dcor</code>,<code>pair_mine</code>,<code>pair_ace</code>,
+<code>pair_cancor</code>,<code>pair_nmi</code>,<code>pair_uncertainty</code>,
+<code>pair_chi</code>, but any subset of the <code>pair_</code>
+functions may be supplied as an argument, as in the second example
+below.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">pairwise_multi</span>(penguins)</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="co">#&gt; # A tibble: 130 × 6</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="co">#&gt;    x             y              score    group  value pair_type</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;         &lt;chr&gt;          &lt;chr&gt;    &lt;chr&gt;  &lt;dbl&gt; &lt;chr&gt;    </span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co">#&gt;  1 bill_depth_mm bill_length_mm pearson  all   -0.235 nn       </span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="co">#&gt;  2 bill_depth_mm bill_length_mm dcor     all    0.387 nn       </span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="co">#&gt;  3 bill_depth_mm bill_length_mm MIC      all    0.313 nn       </span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="co">#&gt;  4 bill_depth_mm bill_length_mm ace      all    0.585 nn       </span></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a><span class="co">#&gt;  5 bill_depth_mm bill_length_mm cancor   all    0.235 nn       </span></span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="co">#&gt;  6 bill_depth_mm bill_length_mm nmi      all    0.225 nn       </span></span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a><span class="co">#&gt;  7 bill_depth_mm bill_length_mm spearman all   -0.222 nn       </span></span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a><span class="co">#&gt;  8 bill_depth_mm body_mass_g    pearson  all   -0.472 nn       </span></span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a><span class="co">#&gt;  9 bill_depth_mm body_mass_g    dcor     all    0.614 nn       </span></span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a><span class="co">#&gt; 10 bill_depth_mm body_mass_g    MIC      all    0.518 nn       </span></span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a><span class="co">#&gt; # ℹ 120 more rows</span></span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a>dcor_nmi <span class="ot">&lt;-</span> <span class="fu">pairwise_multi</span>(penguins, <span class="fu">c</span>(<span class="st">&quot;pair_dcor&quot;</span>, <span class="st">&quot;pair_nmi&quot;</span>))</span></code></pre></div>
+</div>
+<div id="calculating-grouped-measures" class="section level2">
+<h2>Calculating grouped measures</h2>
+<p>For each of the pairwise calculation functions, they can be wrapped
+using <code>pairwise_by</code> to build a score calculation for each
+level of a grouping variable. Of course, grouped scores could be
+calculated using <code>dplyr</code> machinery, but it is a bit more
+work.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">pairwise_by</span>(penguins, <span class="at">by=</span><span class="st">&quot;species&quot;</span>, pair_cor)</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="co">#&gt; # A tibble: 40 × 6</span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="co">#&gt;    x             y                 score   group      value pair_type</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;         &lt;chr&gt;             &lt;chr&gt;   &lt;fct&gt;      &lt;dbl&gt; &lt;chr&gt;    </span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="co">#&gt;  1 bill_depth_mm bill_length_mm    pearson Adelie     0.391 nn       </span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="co">#&gt;  2 bill_depth_mm bill_length_mm    pearson Chinstrap  0.654 nn       </span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="co">#&gt;  3 bill_depth_mm bill_length_mm    pearson Gentoo     0.643 nn       </span></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="co">#&gt;  4 bill_depth_mm bill_length_mm    pearson all       -0.235 nn       </span></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a><span class="co">#&gt;  5 bill_depth_mm body_mass_g       pearson Adelie     0.576 nn       </span></span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a><span class="co">#&gt;  6 bill_depth_mm body_mass_g       pearson Chinstrap  0.604 nn       </span></span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a><span class="co">#&gt;  7 bill_depth_mm body_mass_g       pearson Gentoo     0.719 nn       </span></span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a><span class="co">#&gt;  8 bill_depth_mm body_mass_g       pearson all       -0.472 nn       </span></span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a><span class="co">#&gt;  9 bill_depth_mm flipper_length_mm pearson Adelie     0.308 nn       </span></span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a><span class="co">#&gt; 10 bill_depth_mm flipper_length_mm pearson Chinstrap  0.580 nn       </span></span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a><span class="co">#&gt; # ℹ 30 more rows</span></span></code></pre></div>
+<p>Use argument <code>ungrouped=FALSE</code> to suppress calculation of
+the ungrouped scores.</p>
+<p><code>pairwise_scores</code> has a <code>by</code> argument, and
+provides pairwise scores for the levels of a grouping variable.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>sc_sex <span class="ot">&lt;-</span> <span class="fu">pairwise_scores</span>(penguins, <span class="at">by=</span><span class="st">&quot;species&quot;</span>)</span></code></pre></div>
+<p>The column <code>group</code> now shows the levels of the grouping
+variable, along with “all” for ungrouped scores. Use
+<code>ungrouped=FALSE</code> to suppress calculation of the ungrouped
+scores.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>sc_sex <span class="sc">|&gt;</span> <span class="fu">distinct</span>(group)</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="co">#&gt; # A tibble: 4 × 1</span></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a><span class="co">#&gt;   group    </span></span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="co">#&gt;   &lt;fct&gt;    </span></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="co">#&gt; 1 Adelie   </span></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="co">#&gt; 2 Chinstrap</span></span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a><span class="co">#&gt; 3 Gentoo   </span></span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a><span class="co">#&gt; 4 all</span></span></code></pre></div>
+<p>If you want to calculate different scores to the default, specify
+this via the <code>control</code> argument:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>pc <span class="ot">&lt;-</span> <span class="fu">pair_control</span>(<span class="at">nn=</span><span class="st">&quot;pairwise_multi&quot;</span>, <span class="at">nnargs=</span> <span class="fu">c</span>(<span class="st">&quot;pair_dcor&quot;</span>, <span class="st">&quot;pair_ace&quot;</span>), <span class="at">fn=</span><span class="cn">NULL</span>, <span class="at">ff=</span><span class="cn">NULL</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>sc_sex <span class="ot">&lt;-</span> <span class="fu">pairwise_scores</span>(penguins, <span class="at">by=</span><span class="st">&quot;species&quot;</span>, <span class="at">control=</span>pc, <span class="at">ungrouped=</span><span class="cn">FALSE</span>) </span></code></pre></div>
+</div>
+<div id="scagnostic-measures" class="section level2">
+<h2>Scagnostic measures</h2>
+<p>The package <code>scagnostics</code> provides pairwise variable
+scores based on graph-theoretic interestingness measures, for numeric
+variable pairs only.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">pair_scagnostics</span>(penguins[,<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>], <span class="at">scagnostic=</span><span class="fu">c</span>(<span class="st">&quot;Stringy&quot;</span>, <span class="st">&quot;Clumpy&quot;</span>))</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 6</span></span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a><span class="co">#&gt;   x              y                 score   group  value pair_type</span></span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;          &lt;chr&gt;             &lt;chr&gt;   &lt;chr&gt;  &lt;dbl&gt; &lt;chr&gt;    </span></span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a><span class="co">#&gt; 1 bill_depth_mm  bill_length_mm    Stringy all   0.331  nn       </span></span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a><span class="co">#&gt; 2 bill_depth_mm  bill_length_mm    Clumpy  all   0.0328 nn       </span></span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a><span class="co">#&gt; 3 bill_depth_mm  flipper_length_mm Stringy all   0.378  nn       </span></span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a><span class="co">#&gt; 4 bill_depth_mm  flipper_length_mm Clumpy  all   0.530  nn       </span></span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a><span class="co">#&gt; 5 bill_length_mm flipper_length_mm Stringy all   0.370  nn       </span></span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a><span class="co">#&gt; 6 bill_length_mm flipper_length_mm Clumpy  all   0.0388 nn</span></span></code></pre></div>
+<p>Note that the first two variables of the penguins data are
+non-numeric and so are ignored in the above calculation.</p>
+<p>For group-wise calculation:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">pairwise_by</span>(penguins[,<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>], <span class="at">by=</span><span class="st">&quot;species&quot;</span>,<span class="cf">function</span>(x) <span class="fu">pair_scagnostics</span>(x, <span class="at">scagnostic=</span><span class="fu">c</span>(<span class="st">&quot;Stringy&quot;</span>, <span class="st">&quot;Clumpy&quot;</span>)))</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="co">#&gt; # A tibble: 24 × 6</span></span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="co">#&gt;    x             y                 score   group      value pair_type</span></span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;         &lt;chr&gt;             &lt;chr&gt;   &lt;fct&gt;      &lt;dbl&gt; &lt;chr&gt;    </span></span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a><span class="co">#&gt;  1 bill_depth_mm bill_length_mm    Stringy Adelie    0.278  nn       </span></span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a><span class="co">#&gt;  2 bill_depth_mm bill_length_mm    Clumpy  Adelie    0.0477 nn       </span></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a><span class="co">#&gt;  3 bill_depth_mm bill_length_mm    Stringy Chinstrap 0.325  nn       </span></span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a><span class="co">#&gt;  4 bill_depth_mm bill_length_mm    Clumpy  Chinstrap 0.0758 nn       </span></span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a><span class="co">#&gt;  5 bill_depth_mm bill_length_mm    Stringy Gentoo    0.393  nn       </span></span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a><span class="co">#&gt;  6 bill_depth_mm bill_length_mm    Clumpy  Gentoo    0.0579 nn       </span></span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a><span class="co">#&gt;  7 bill_depth_mm bill_length_mm    Stringy all       0.331  nn       </span></span>
+<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a><span class="co">#&gt;  8 bill_depth_mm bill_length_mm    Clumpy  all       0.0328 nn       </span></span>
+<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a><span class="co">#&gt;  9 bill_depth_mm flipper_length_mm Stringy Adelie    0.392  nn       </span></span>
+<span id="cb13-14"><a href="#cb13-14" tabindex="-1"></a><span class="co">#&gt; 10 bill_depth_mm flipper_length_mm Clumpy  Adelie    0.0598 nn       </span></span>
+<span id="cb13-15"><a href="#cb13-15" tabindex="-1"></a><span class="co">#&gt; # ℹ 14 more rows</span></span></code></pre></div>
+</div>
+<div id="converting-symmetric-matrices-to-pairwise-and-vice-versa." class="section level2">
+<h2>Converting symmetric matrices to <code>pairwise</code> and
+vice-versa.</h2>
+<p>The conventional way of representing pairwise scores or correlations
+is via a numeric symmetric matrix. The tidy <code>pairwise</code>
+structure we use in <code>bullseye</code> is more flexible, and is
+amenable to multiple measures of association and grouped measures.</p>
+<p>It is straightforward to convert from a symmetric matrix to
+<code>pairwise</code>:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">cor</span>(penguins[, <span class="fu">c</span>(<span class="st">&quot;bill_length_mm&quot;</span>, <span class="st">&quot;bill_depth_mm&quot;</span> ,<span class="st">&quot;flipper_length_mm&quot;</span> ,<span class="st">&quot;body_mass_g&quot;</span>)], </span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>         <span class="at">use=</span> <span class="st">&quot;pairwise.complete.obs&quot;</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a><span class="fu">pairwise</span>(x, <span class="at">score=</span><span class="st">&quot;pearson&quot;</span>, <span class="at">pair_type =</span> <span class="st">&quot;nn&quot;</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 6</span></span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a><span class="co">#&gt;   x              y                 score   group  value pair_type</span></span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;          &lt;chr&gt;             &lt;chr&gt;   &lt;chr&gt;  &lt;dbl&gt; &lt;chr&gt;    </span></span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a><span class="co">#&gt; 1 bill_depth_mm  bill_length_mm    pearson all   -0.235 nn       </span></span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a><span class="co">#&gt; 2 bill_length_mm flipper_length_mm pearson all    0.656 nn       </span></span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a><span class="co">#&gt; 3 bill_depth_mm  flipper_length_mm pearson all   -0.584 nn       </span></span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a><span class="co">#&gt; 4 body_mass_g    flipper_length_mm pearson all    0.871 nn       </span></span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a><span class="co">#&gt; 5 bill_length_mm body_mass_g       pearson all    0.595 nn       </span></span>
+<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a><span class="co">#&gt; 6 bill_depth_mm  body_mass_g       pearson all   -0.472 nn</span></span></code></pre></div>
+<p>And for the reverse, converting a <code>pairwise</code> to a
+symmetric matrix:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="fu">as.matrix</span>(sc_dcor)</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="co">#&gt;                   bill_depth_mm bill_length_mm body_mass_g flipper_length_mm</span></span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a><span class="co">#&gt; bill_depth_mm                NA     0.38720211   0.6141631         0.7039636</span></span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a><span class="co">#&gt; bill_length_mm        0.3872021             NA   0.5871319         0.6664558</span></span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a><span class="co">#&gt; body_mass_g           0.6141631     0.58713186          NA         0.8674122</span></span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a><span class="co">#&gt; flipper_length_mm     0.7039636     0.66645577   0.8674122                NA</span></span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a><span class="co">#&gt; year                  0.1117057     0.07842516   0.0790560         0.1643876</span></span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a><span class="co">#&gt;                         year</span></span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a><span class="co">#&gt; bill_depth_mm     0.11170568</span></span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a><span class="co">#&gt; bill_length_mm    0.07842516</span></span>
+<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a><span class="co">#&gt; body_mass_g       0.07905600</span></span>
+<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a><span class="co">#&gt; flipper_length_mm 0.16438763</span></span>
+<span id="cb15-13"><a href="#cb15-13" tabindex="-1"></a><span class="co">#&gt; year                      NA</span></span></code></pre></div>
+<div id="converting-structures-from-package-correlation" class="section level3">
+<h3>Converting structures from package <code>correlation</code>:</h3>
+<p><code>correlation</code> package calculates different kinds of
+correlations, such as partial correlations, Bayesian correlations,
+multilevel correlations, polychoric correlations, biweight, percentage
+bend or Sheperd’s Pi correlations, distance correlation and more. The
+output data structure is a tidy dataframe with a correlation value and
+correlation tests for variable pairs for which the correlation method is
+defined.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>correlation<span class="sc">::</span><span class="fu">correlation</span>(penguins)</span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="co">#&gt; # Correlation Matrix (pearson-method)</span></span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a><span class="co">#&gt; Parameter1        |        Parameter2 |     r |         95% CI | t(340) |         p</span></span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a><span class="co">#&gt; -----------------------------------------------------------------------------------</span></span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a><span class="co">#&gt; bill_length_mm    |     bill_depth_mm | -0.24 | [-0.33, -0.13] |  -4.46 | &lt; .001***</span></span>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a><span class="co">#&gt; bill_length_mm    | flipper_length_mm |  0.66 | [ 0.59,  0.71] |  16.03 | &lt; .001***</span></span>
+<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a><span class="co">#&gt; bill_length_mm    |       body_mass_g |  0.60 | [ 0.52,  0.66] |  13.65 | &lt; .001***</span></span>
+<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a><span class="co">#&gt; bill_length_mm    |              year |  0.05 | [-0.05,  0.16] |   1.01 | 0.797    </span></span>
+<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a><span class="co">#&gt; bill_depth_mm     | flipper_length_mm | -0.58 | [-0.65, -0.51] | -13.26 | &lt; .001***</span></span>
+<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a><span class="co">#&gt; bill_depth_mm     |       body_mass_g | -0.47 | [-0.55, -0.39] |  -9.87 | &lt; .001***</span></span>
+<span id="cb16-12"><a href="#cb16-12" tabindex="-1"></a><span class="co">#&gt; bill_depth_mm     |              year | -0.06 | [-0.17,  0.05] |  -1.11 | 0.797    </span></span>
+<span id="cb16-13"><a href="#cb16-13" tabindex="-1"></a><span class="co">#&gt; flipper_length_mm |       body_mass_g |  0.87 | [ 0.84,  0.89] |  32.72 | &lt; .001***</span></span>
+<span id="cb16-14"><a href="#cb16-14" tabindex="-1"></a><span class="co">#&gt; flipper_length_mm |              year |  0.17 | [ 0.06,  0.27] |   3.17 | 0.007**  </span></span>
+<span id="cb16-15"><a href="#cb16-15" tabindex="-1"></a><span class="co">#&gt; body_mass_g       |              year |  0.04 | [-0.06,  0.15] |   0.78 | 0.797    </span></span>
+<span id="cb16-16"><a href="#cb16-16" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb16-17"><a href="#cb16-17" tabindex="-1"></a><span class="co">#&gt; p-value adjustment method: Holm (1979)</span></span>
+<span id="cb16-18"><a href="#cb16-18" tabindex="-1"></a><span class="co">#&gt; Observations: 342</span></span></code></pre></div>
+<p>The default calculation uses Pearson correlation. Other options are
+available via the <code>method</code> argument.</p>
+<p>As there is an <code>as.matrix</code> method provided for the results
+of <code>correlation::correlation</code>, it is straightforward to
+convert this to a <code>pairwise</code> tibble.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> correlation<span class="sc">::</span><span class="fu">correlation</span>(penguins)</span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a><span class="fu">pairwise</span>(<span class="fu">as.matrix</span>(x)) </span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a><span class="co">#&gt; # A tibble: 10 × 6</span></span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a><span class="co">#&gt;    x                 y                 score group   value pair_type</span></span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;             &lt;chr&gt;             &lt;chr&gt; &lt;chr&gt;   &lt;dbl&gt; &lt;chr&gt;    </span></span>
+<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a><span class="co">#&gt;  1 bill_depth_mm     bill_length_mm    &lt;NA&gt;  all   -0.235  &lt;NA&gt;     </span></span>
+<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a><span class="co">#&gt;  2 bill_length_mm    flipper_length_mm &lt;NA&gt;  all    0.656  &lt;NA&gt;     </span></span>
+<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a><span class="co">#&gt;  3 bill_depth_mm     flipper_length_mm &lt;NA&gt;  all   -0.584  &lt;NA&gt;     </span></span>
+<span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a><span class="co">#&gt;  4 body_mass_g       flipper_length_mm &lt;NA&gt;  all    0.871  &lt;NA&gt;     </span></span>
+<span id="cb17-10"><a href="#cb17-10" tabindex="-1"></a><span class="co">#&gt;  5 bill_length_mm    body_mass_g       &lt;NA&gt;  all    0.595  &lt;NA&gt;     </span></span>
+<span id="cb17-11"><a href="#cb17-11" tabindex="-1"></a><span class="co">#&gt;  6 bill_depth_mm     body_mass_g       &lt;NA&gt;  all   -0.472  &lt;NA&gt;     </span></span>
+<span id="cb17-12"><a href="#cb17-12" tabindex="-1"></a><span class="co">#&gt;  7 bill_length_mm    year              &lt;NA&gt;  all    0.0545 &lt;NA&gt;     </span></span>
+<span id="cb17-13"><a href="#cb17-13" tabindex="-1"></a><span class="co">#&gt;  8 bill_depth_mm     year              &lt;NA&gt;  all   -0.0604 &lt;NA&gt;     </span></span>
+<span id="cb17-14"><a href="#cb17-14" tabindex="-1"></a><span class="co">#&gt;  9 flipper_length_mm year              &lt;NA&gt;  all    0.170  &lt;NA&gt;     </span></span>
+<span id="cb17-15"><a href="#cb17-15" tabindex="-1"></a><span class="co">#&gt; 10 body_mass_g       year              &lt;NA&gt;  all    0.0422 &lt;NA&gt;</span></span></code></pre></div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

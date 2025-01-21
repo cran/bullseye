@@ -100,8 +100,8 @@ mutate(scores, valmax = max(abs(value)), .by=c(x,y))|>
 
 
 ## ----eval=FALSE---------------------------------------------------------------
-#  a <- ace_cor(acs12$income, acs12$employment)
-#  plot(a$x, a$tx)
+# a <- ace_cor(acs12$income, acs12$employment)
+# plot(a$x, a$tx)
 
 ## -----------------------------------------------------------------------------
 group_scores <- pairwise_scores(acs12, by = "race")

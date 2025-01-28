@@ -1,9 +1,9 @@
-d8fe8fdda695fc5f54adca156c804b08 *DESCRIPTION
+147f15bce7aa416b1cd91d351167b1e5 *DESCRIPTION
 5cd1c9602e8bd2e081b90c4e8ee8b2a4 *LICENSE
 716cbb335b8bfee2068c5ffdc07b12ee *NAMESPACE
-46e7ba4f6f5daf8dc3bf41dbec154bc0 *NEWS.md
+ce7b94d1e496772c91d5fae5cbd0262e *NEWS.md
 99d1cd227e7ed9c7614f9a58323f9d81 *R/bullseye-package.R
-eba2316592343f631cb3a96ad26563b3 *R/pair_methods.R
+7b460c51b09e034680ae9304c649df42 *R/pair_methods.R
 4b8e1ee23227ce0679e8e803f716450d *R/pair_scagnostics.R
 69073fe366f4025703df018255f1c41e *R/pairwise.R
 2c6a4d674725649a71f33e54d2c45fca *R/pairwise_multi.R
@@ -17,10 +17,10 @@ c748a5fa0eff91b6a2ff337cf5080f1a *inst/doc/calc_pairwise.Rmd
 6f0f4884091f66daa362c8399d2307c1 *inst/doc/calc_pairwise.html
 5ef9ae5955f10ce337a6df16b0ae092a *inst/doc/integrating.R
 209f6b466be5918b2b6fdbdeae39910e *inst/doc/integrating.Rmd
-9c912c1ac9ef2f4578dbb8c95bfda2d2 *inst/doc/integrating.html
+a75086f053274f0365b8dae703eb334a *inst/doc/integrating.html
 683f857ca157654836707c17d8527abc *inst/doc/vis_pairwise.R
 1599359c53761ac9353d18d8c06dfe7d *inst/doc/vis_pairwise.Rmd
-a87469bff92819086e5a851c23182434 *inst/doc/vis_pairwise.html
+404e88365b94894b998b9a161a926eb1 *inst/doc/vis_pairwise.html
 1858f99d568992bf8a0556a747a69aa8 *man/ace_cor.Rd
 7da5406ab87fcc9391eac159e1cb6f5b *man/as.matrix.pairwise.Rd
 c5396fe152c885167f84c65ceecc47f8 *man/bullseye-package.Rd
@@ -51,7 +51,7 @@ cc4dc4f13bfecfc9ed5cc5677c46c767 *man/pairwise_by.Rd
 35cb1b6fc3d19bf3da34dd3eada63d0d *man/plot_pairwise.Rd
 58d602d2f638d594637993789c60cec1 *man/plot_pairwise_linear.Rd
 b80f5db9b8385461efaf542246283636 *tests/testthat.R
-4d69966aa09deffdbf0d75a8e383135c *tests/testthat/test-pair_methods.R
+4dcc7dec2982ef1f11cf02014165be45 *tests/testthat/test-pair_methods.R
 ec788166c9296acf95b00ffbbfc8c581 *tests/testthat/test-pair_scagnostics.R
 f3227136b123b0f28bea36fcd82c4d8d *tests/testthat/test-pair_scores.R
 1673240a9f8765b69d258484f8a855ce *tests/testthat/test-pairwise.R

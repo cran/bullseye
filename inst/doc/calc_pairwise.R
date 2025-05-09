@@ -50,6 +50,14 @@ pc <- pair_control(nn="pairwise_multi", nnargs= c("pair_dcor", "pair_ace"), fn=N
 sc_sex <- pairwise_scores(penguins, by="species", control=pc, ungrouped=FALSE) 
 
 ## -----------------------------------------------------------------------------
+pairwise_scores(penguins, by="species",add.nobs=TRUE) 
+
+## -----------------------------------------------------------------------------
+pair_cancor(penguins) |>
+  add_nobs_to_pairwise(penguins) |> pull(n)
+
+
+## -----------------------------------------------------------------------------
 pair_scagnostics(penguins[,1:5], scagnostic=c("Stringy", "Clumpy"))
 
 ## -----------------------------------------------------------------------------

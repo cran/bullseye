@@ -42,6 +42,10 @@ plot(scores, interactive=TRUE)
 plot(scores, var_order="seriate_max_diff", interactive=TRUE) 
 
 ## -----------------------------------------------------------------------------
+pairwise_scores(peng, by="species", add.nobs = TRUE)|>
+  plot(interactive=TRUE) 
+
+## -----------------------------------------------------------------------------
 mscores <- 
 bind_rows(
   pair_cor(peng),
@@ -58,7 +62,7 @@ sc <- pair_scagnostics(peng)
 plot(sc, interactive=TRUE)
 
 ## ----fig.width=5--------------------------------------------------------------
-plot(sc, type="linear")
+plot(sc, type="linear", geom="tile")
 
 ## -----------------------------------------------------------------------------
 sc |> filter(y != "year")|>
@@ -93,10 +97,12 @@ acs12 <- openintro::acs12
 scores <- pairwise_multi(acs12)
 
 ## -----------------------------------------------------------------------------
-mutate(scores, valmax = max(abs(value)), .by=c(x,y))|>
-  filter(valmax > .25) |>
-  plot(type="linear",geom="point", interactive=TRUE)
+filter(scores, x=="employment", y=="time_to_work")
 
+## -----------------------------------------------------------------------------
+mutate(scores, valmax = max(abs(value)), .by=c(x,y))|> 
+  filter(valmax > .25) |> 
+  plot(type="linear",geom="point", interactive=TRUE)
 
 
 ## ----eval=FALSE---------------------------------------------------------------
@@ -107,15 +113,13 @@ mutate(scores, valmax = max(abs(value)), .by=c(x,y))|>
 group_scores <- pairwise_scores(acs12, by = "race")
 
 # filtering variable pairs with a range of 0.25 or greater
-rng <- function(vals){
-  if (all(is.na(vals))) 0 else max(vals, na.rm=TRUE)- min(vals,na.rm=TRUE)
-}
 
-mutate(group_scores, valrange = rng(value),valmax = max(abs(value)), .by=c(x,y))|>
+mutate(group_scores, valrange = diff(range(value)),valmax = max(abs(value)), .by=c(x,y))|> 
   filter(valrange > .25 | valmax > .4) |>
   plot(type="linear", geom="point", pair_order = "seriate_max_diff")+ 
    theme(legend.text = element_text(size = rel(.5)), legend.title = element_text(size = rel(.5))
   )
+
 
 ## ----fig.width=8--------------------------------------------------------------
 ggplot(data=acs12, aes(x=employment, y=hrs_work))+

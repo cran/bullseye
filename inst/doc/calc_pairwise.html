@@ -1128,15 +1128,15 @@ below.</p>
 <span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="co">#&gt;    x             y              score    group  value pair_type</span></span>
 <span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;         &lt;chr&gt;          &lt;chr&gt;    &lt;chr&gt;  &lt;dbl&gt; &lt;chr&gt;    </span></span>
 <span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co">#&gt;  1 bill_depth_mm bill_length_mm pearson  all   -0.235 nn       </span></span>
-<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="co">#&gt;  2 bill_depth_mm bill_length_mm dcor     all    0.387 nn       </span></span>
-<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="co">#&gt;  3 bill_depth_mm bill_length_mm MIC      all    0.313 nn       </span></span>
-<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="co">#&gt;  4 bill_depth_mm bill_length_mm ace      all    0.585 nn       </span></span>
-<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a><span class="co">#&gt;  5 bill_depth_mm bill_length_mm cancor   all    0.235 nn       </span></span>
-<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="co">#&gt;  6 bill_depth_mm bill_length_mm nmi      all    0.225 nn       </span></span>
-<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a><span class="co">#&gt;  7 bill_depth_mm bill_length_mm spearman all   -0.222 nn       </span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="co">#&gt;  2 bill_depth_mm bill_length_mm spearman all   -0.222 nn       </span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="co">#&gt;  3 bill_depth_mm bill_length_mm dcor     all    0.387 nn       </span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="co">#&gt;  4 bill_depth_mm bill_length_mm MIC      all    0.313 nn       </span></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a><span class="co">#&gt;  5 bill_depth_mm bill_length_mm ace      all    0.585 nn       </span></span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="co">#&gt;  6 bill_depth_mm bill_length_mm cancor   all    0.235 nn       </span></span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a><span class="co">#&gt;  7 bill_depth_mm bill_length_mm nmi      all    0.225 nn       </span></span>
 <span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a><span class="co">#&gt;  8 bill_depth_mm body_mass_g    pearson  all   -0.472 nn       </span></span>
-<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a><span class="co">#&gt;  9 bill_depth_mm body_mass_g    dcor     all    0.614 nn       </span></span>
-<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a><span class="co">#&gt; 10 bill_depth_mm body_mass_g    MIC      all    0.518 nn       </span></span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a><span class="co">#&gt;  9 bill_depth_mm body_mass_g    spearman all   -0.432 nn       </span></span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a><span class="co">#&gt; 10 bill_depth_mm body_mass_g    dcor     all    0.614 nn       </span></span>
 <span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a><span class="co">#&gt; # ℹ 120 more rows</span></span>
 <span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a>dcor_nmi <span class="ot">&lt;-</span> <span class="fu">pairwise_multi</span>(penguins, <span class="fu">c</span>(<span class="st">&quot;pair_dcor&quot;</span>, <span class="st">&quot;pair_nmi&quot;</span>))</span></code></pre></div>
 </div>
@@ -1148,25 +1148,34 @@ level of a grouping variable. Of course, grouped scores could be
 calculated using <code>dplyr</code> machinery, but it is a bit more
 work.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">pairwise_by</span>(penguins, <span class="at">by=</span><span class="st">&quot;species&quot;</span>, pair_cor)</span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="co">#&gt; # A tibble: 40 × 6</span></span>
-<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="co">#&gt;    x             y                 score   group      value pair_type</span></span>
-<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;         &lt;chr&gt;             &lt;chr&gt;   &lt;fct&gt;      &lt;dbl&gt; &lt;chr&gt;    </span></span>
-<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="co">#&gt;  1 bill_depth_mm bill_length_mm    pearson Adelie     0.391 nn       </span></span>
-<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="co">#&gt;  2 bill_depth_mm bill_length_mm    pearson Chinstrap  0.654 nn       </span></span>
-<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="co">#&gt;  3 bill_depth_mm bill_length_mm    pearson Gentoo     0.643 nn       </span></span>
-<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="co">#&gt;  4 bill_depth_mm bill_length_mm    pearson all       -0.235 nn       </span></span>
-<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a><span class="co">#&gt;  5 bill_depth_mm body_mass_g       pearson Adelie     0.576 nn       </span></span>
-<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a><span class="co">#&gt;  6 bill_depth_mm body_mass_g       pearson Chinstrap  0.604 nn       </span></span>
-<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a><span class="co">#&gt;  7 bill_depth_mm body_mass_g       pearson Gentoo     0.719 nn       </span></span>
-<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a><span class="co">#&gt;  8 bill_depth_mm body_mass_g       pearson all       -0.472 nn       </span></span>
-<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a><span class="co">#&gt;  9 bill_depth_mm flipper_length_mm pearson Adelie     0.308 nn       </span></span>
-<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a><span class="co">#&gt; 10 bill_depth_mm flipper_length_mm pearson Chinstrap  0.580 nn       </span></span>
-<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a><span class="co">#&gt; # ℹ 30 more rows</span></span></code></pre></div>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="co">#&gt; Warning: Variable island of data for group species = Chinstrap has at most one unique</span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="co">#&gt; value, discounting NA.</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="co">#&gt; Warning: Variable island of data for group species = Gentoo has at most one unique</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="co">#&gt; value, discounting NA.</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="co">#&gt; # A tibble: 40 × 6</span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="co">#&gt;    x             y                 score   group      value pair_type</span></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;         &lt;chr&gt;             &lt;chr&gt;   &lt;fct&gt;      &lt;dbl&gt; &lt;chr&gt;    </span></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a><span class="co">#&gt;  1 bill_depth_mm bill_length_mm    pearson Adelie     0.391 nn       </span></span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a><span class="co">#&gt;  2 bill_depth_mm bill_length_mm    pearson Chinstrap  0.654 nn       </span></span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a><span class="co">#&gt;  3 bill_depth_mm bill_length_mm    pearson Gentoo     0.643 nn       </span></span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a><span class="co">#&gt;  4 bill_depth_mm bill_length_mm    pearson all       -0.235 nn       </span></span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a><span class="co">#&gt;  5 bill_depth_mm body_mass_g       pearson Adelie     0.576 nn       </span></span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a><span class="co">#&gt;  6 bill_depth_mm body_mass_g       pearson Chinstrap  0.604 nn       </span></span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a><span class="co">#&gt;  7 bill_depth_mm body_mass_g       pearson Gentoo     0.719 nn       </span></span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a><span class="co">#&gt;  8 bill_depth_mm body_mass_g       pearson all       -0.472 nn       </span></span>
+<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a><span class="co">#&gt;  9 bill_depth_mm flipper_length_mm pearson Adelie     0.308 nn       </span></span>
+<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a><span class="co">#&gt; 10 bill_depth_mm flipper_length_mm pearson Chinstrap  0.580 nn       </span></span>
+<span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a><span class="co">#&gt; # ℹ 30 more rows</span></span></code></pre></div>
 <p>Use argument <code>ungrouped=FALSE</code> to suppress calculation of
 the ungrouped scores.</p>
-<p><code>pairwise_scores</code> has a <code>by</code> argument, and
-provides pairwise scores for the levels of a grouping variable.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>sc_sex <span class="ot">&lt;-</span> <span class="fu">pairwise_scores</span>(penguins, <span class="at">by=</span><span class="st">&quot;species&quot;</span>)</span></code></pre></div>
+<p>The <code>pairwise_scores</code> function introduced previously also
+has a <code>by</code> argument, and provides pairwise scores for the
+levels of a grouping variable.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>sc_sex <span class="ot">&lt;-</span> <span class="fu">pairwise_scores</span>(penguins, <span class="at">by=</span><span class="st">&quot;species&quot;</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="co">#&gt; Warning: Variable island of data for group species = Chinstrap has at most one unique</span></span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="co">#&gt; value, discounting NA.</span></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a><span class="co">#&gt; Warning: Variable island of data for group species = Gentoo has at most one unique</span></span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a><span class="co">#&gt; value, discounting NA.</span></span></code></pre></div>
 <p>The column <code>group</code> now shows the levels of the grouping
 variable, along with “all” for ungrouped scores. Use
 <code>ungrouped=FALSE</code> to suppress calculation of the ungrouped
@@ -1182,41 +1191,82 @@ scores.</p>
 <p>If you want to calculate different scores to the default, specify
 this via the <code>control</code> argument:</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>pc <span class="ot">&lt;-</span> <span class="fu">pair_control</span>(<span class="at">nn=</span><span class="st">&quot;pairwise_multi&quot;</span>, <span class="at">nnargs=</span> <span class="fu">c</span>(<span class="st">&quot;pair_dcor&quot;</span>, <span class="st">&quot;pair_ace&quot;</span>), <span class="at">fn=</span><span class="cn">NULL</span>, <span class="at">ff=</span><span class="cn">NULL</span>)</span>
-<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>sc_sex <span class="ot">&lt;-</span> <span class="fu">pairwise_scores</span>(penguins, <span class="at">by=</span><span class="st">&quot;species&quot;</span>, <span class="at">control=</span>pc, <span class="at">ungrouped=</span><span class="cn">FALSE</span>) </span></code></pre></div>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>sc_sex <span class="ot">&lt;-</span> <span class="fu">pairwise_scores</span>(penguins, <span class="at">by=</span><span class="st">&quot;species&quot;</span>, <span class="at">control=</span>pc, <span class="at">ungrouped=</span><span class="cn">FALSE</span>) </span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="co">#&gt; Warning: Variable island of data for group species = Chinstrap has at most one unique</span></span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a><span class="co">#&gt; value, discounting NA.</span></span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a><span class="co">#&gt; Warning: Variable island of data for group species = Gentoo has at most one unique</span></span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a><span class="co">#&gt; value, discounting NA.</span></span></code></pre></div>
+<p>Both of the functions <code>pairwise_by</code> and
+<code>pairwise_scores</code> have an additional argument
+<code>add.nobs</code>. When this is set to TRUE, the pairwise structure
+has an additional column giving the number of observations used in the
+calculation of each score.</p>
+<p>This is potentially useful information in the presence of imbalanced
+data or with missing values.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">pairwise_scores</span>(penguins, <span class="at">by=</span><span class="st">&quot;species&quot;</span>,<span class="at">add.nobs=</span><span class="cn">TRUE</span>) </span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a><span class="co">#&gt; Warning: Variable island of data for group species = Chinstrap has at most one unique</span></span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a><span class="co">#&gt; value, discounting NA.</span></span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a><span class="co">#&gt; Warning: Variable island of data for group species = Gentoo has at most one unique</span></span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a><span class="co">#&gt; value, discounting NA.</span></span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a><span class="co">#&gt; # A tibble: 84 × 7</span></span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a><span class="co">#&gt;    x                 y      score  group   value pair_type     n</span></span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;             &lt;chr&gt;  &lt;chr&gt;  &lt;fct&gt;   &lt;dbl&gt; &lt;chr&gt;     &lt;int&gt;</span></span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a><span class="co">#&gt;  1 island            sex    cancor Adelie 0.0164 ff          146</span></span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a><span class="co">#&gt;  2 bill_length_mm    island cancor Adelie 0.0838 fn          151</span></span>
+<span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a><span class="co">#&gt;  3 bill_depth_mm     island cancor Adelie 0.0629 fn          151</span></span>
+<span id="cb12-12"><a href="#cb12-12" tabindex="-1"></a><span class="co">#&gt;  4 flipper_length_mm island cancor Adelie 0.148  fn          151</span></span>
+<span id="cb12-13"><a href="#cb12-13" tabindex="-1"></a><span class="co">#&gt;  5 body_mass_g       island cancor Adelie 0.0208 fn          151</span></span>
+<span id="cb12-14"><a href="#cb12-14" tabindex="-1"></a><span class="co">#&gt;  6 bill_length_mm    sex    cancor Adelie 0.590  fn          146</span></span>
+<span id="cb12-15"><a href="#cb12-15" tabindex="-1"></a><span class="co">#&gt;  7 bill_depth_mm     sex    cancor Adelie 0.597  fn          146</span></span>
+<span id="cb12-16"><a href="#cb12-16" tabindex="-1"></a><span class="co">#&gt;  8 flipper_length_mm sex    cancor Adelie 0.355  fn          146</span></span>
+<span id="cb12-17"><a href="#cb12-17" tabindex="-1"></a><span class="co">#&gt;  9 body_mass_g       sex    cancor Adelie 0.738  fn          146</span></span>
+<span id="cb12-18"><a href="#cb12-18" tabindex="-1"></a><span class="co">#&gt; 10 island            year   cancor Adelie 0.104  fn          152</span></span>
+<span id="cb12-19"><a href="#cb12-19" tabindex="-1"></a><span class="co">#&gt; # ℹ 74 more rows</span></span></code></pre></div>
+<p>For other <code>pairwise</code> constructors, the <code>n</code>
+column can be added by calling the <code>add_nobs_to_pairwise</code>
+function directly:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">pair_cancor</span>(penguins) <span class="sc">|&gt;</span></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>  <span class="fu">add_nobs_to_pairwise</span>(penguins) <span class="sc">|&gt;</span> <span class="fu">pull</span>(n)</span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="co">#&gt;  [1] 344 342 342 342 342 333 342 342 342 342 342 342 342 342 342 342 333 333 333</span></span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="co">#&gt; [20] 333 333 344 344 342 342 342 342 333</span></span></code></pre></div>
 </div>
 <div id="scagnostic-measures" class="section level2">
 <h2>Scagnostic measures</h2>
 <p>The package <code>scagnostics</code> provides pairwise variable
 scores based on graph-theoretic interestingness measures, for numeric
 variable pairs only.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">pair_scagnostics</span>(penguins[,<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>], <span class="at">scagnostic=</span><span class="fu">c</span>(<span class="st">&quot;Stringy&quot;</span>, <span class="st">&quot;Clumpy&quot;</span>))</span>
-<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 6</span></span>
-<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a><span class="co">#&gt;   x              y                 score   group  value pair_type</span></span>
-<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;          &lt;chr&gt;             &lt;chr&gt;   &lt;chr&gt;  &lt;dbl&gt; &lt;chr&gt;    </span></span>
-<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a><span class="co">#&gt; 1 bill_depth_mm  bill_length_mm    Stringy all   0.331  nn       </span></span>
-<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a><span class="co">#&gt; 2 bill_depth_mm  bill_length_mm    Clumpy  all   0.0328 nn       </span></span>
-<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a><span class="co">#&gt; 3 bill_depth_mm  flipper_length_mm Stringy all   0.378  nn       </span></span>
-<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a><span class="co">#&gt; 4 bill_depth_mm  flipper_length_mm Clumpy  all   0.530  nn       </span></span>
-<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a><span class="co">#&gt; 5 bill_length_mm flipper_length_mm Stringy all   0.370  nn       </span></span>
-<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a><span class="co">#&gt; 6 bill_length_mm flipper_length_mm Clumpy  all   0.0388 nn</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="fu">pair_scagnostics</span>(penguins[,<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>], <span class="at">scagnostic=</span><span class="fu">c</span>(<span class="st">&quot;Stringy&quot;</span>, <span class="st">&quot;Clumpy&quot;</span>))</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 6</span></span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a><span class="co">#&gt;   x              y                 score   group  value pair_type</span></span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;          &lt;chr&gt;             &lt;chr&gt;   &lt;chr&gt;  &lt;dbl&gt; &lt;chr&gt;    </span></span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a><span class="co">#&gt; 1 bill_depth_mm  bill_length_mm    Stringy all   0.331  nn       </span></span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a><span class="co">#&gt; 2 bill_depth_mm  bill_length_mm    Clumpy  all   0.0328 nn       </span></span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a><span class="co">#&gt; 3 bill_depth_mm  flipper_length_mm Stringy all   0.378  nn       </span></span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a><span class="co">#&gt; 4 bill_depth_mm  flipper_length_mm Clumpy  all   0.530  nn       </span></span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a><span class="co">#&gt; 5 bill_length_mm flipper_length_mm Stringy all   0.370  nn       </span></span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a><span class="co">#&gt; 6 bill_length_mm flipper_length_mm Clumpy  all   0.0388 nn</span></span></code></pre></div>
 <p>Note that the first two variables of the penguins data are
 non-numeric and so are ignored in the above calculation.</p>
 <p>For group-wise calculation:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">pairwise_by</span>(penguins[,<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>], <span class="at">by=</span><span class="st">&quot;species&quot;</span>,<span class="cf">function</span>(x) <span class="fu">pair_scagnostics</span>(x, <span class="at">scagnostic=</span><span class="fu">c</span>(<span class="st">&quot;Stringy&quot;</span>, <span class="st">&quot;Clumpy&quot;</span>)))</span>
-<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="co">#&gt; # A tibble: 24 × 6</span></span>
-<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="co">#&gt;    x             y                 score   group      value pair_type</span></span>
-<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;         &lt;chr&gt;             &lt;chr&gt;   &lt;fct&gt;      &lt;dbl&gt; &lt;chr&gt;    </span></span>
-<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a><span class="co">#&gt;  1 bill_depth_mm bill_length_mm    Stringy Adelie    0.278  nn       </span></span>
-<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a><span class="co">#&gt;  2 bill_depth_mm bill_length_mm    Clumpy  Adelie    0.0477 nn       </span></span>
-<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a><span class="co">#&gt;  3 bill_depth_mm bill_length_mm    Stringy Chinstrap 0.325  nn       </span></span>
-<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a><span class="co">#&gt;  4 bill_depth_mm bill_length_mm    Clumpy  Chinstrap 0.0758 nn       </span></span>
-<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a><span class="co">#&gt;  5 bill_depth_mm bill_length_mm    Stringy Gentoo    0.393  nn       </span></span>
-<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a><span class="co">#&gt;  6 bill_depth_mm bill_length_mm    Clumpy  Gentoo    0.0579 nn       </span></span>
-<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a><span class="co">#&gt;  7 bill_depth_mm bill_length_mm    Stringy all       0.331  nn       </span></span>
-<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a><span class="co">#&gt;  8 bill_depth_mm bill_length_mm    Clumpy  all       0.0328 nn       </span></span>
-<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a><span class="co">#&gt;  9 bill_depth_mm flipper_length_mm Stringy Adelie    0.392  nn       </span></span>
-<span id="cb13-14"><a href="#cb13-14" tabindex="-1"></a><span class="co">#&gt; 10 bill_depth_mm flipper_length_mm Clumpy  Adelie    0.0598 nn       </span></span>
-<span id="cb13-15"><a href="#cb13-15" tabindex="-1"></a><span class="co">#&gt; # ℹ 14 more rows</span></span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="fu">pairwise_by</span>(penguins[,<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>], <span class="at">by=</span><span class="st">&quot;species&quot;</span>,<span class="cf">function</span>(x) <span class="fu">pair_scagnostics</span>(x, <span class="at">scagnostic=</span><span class="fu">c</span>(<span class="st">&quot;Stringy&quot;</span>, <span class="st">&quot;Clumpy&quot;</span>)))</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="co">#&gt; Warning: Variable island of data for group species = Chinstrap has at most one unique</span></span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a><span class="co">#&gt; value, discounting NA.</span></span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a><span class="co">#&gt; Warning: Variable island of data for group species = Gentoo has at most one unique</span></span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a><span class="co">#&gt; value, discounting NA.</span></span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a><span class="co">#&gt; # A tibble: 24 × 6</span></span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a><span class="co">#&gt;    x             y                 score   group      value pair_type</span></span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;         &lt;chr&gt;             &lt;chr&gt;   &lt;fct&gt;      &lt;dbl&gt; &lt;chr&gt;    </span></span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a><span class="co">#&gt;  1 bill_depth_mm bill_length_mm    Stringy Adelie    0.278  nn       </span></span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a><span class="co">#&gt;  2 bill_depth_mm bill_length_mm    Clumpy  Adelie    0.0477 nn       </span></span>
+<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a><span class="co">#&gt;  3 bill_depth_mm bill_length_mm    Stringy Chinstrap 0.325  nn       </span></span>
+<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a><span class="co">#&gt;  4 bill_depth_mm bill_length_mm    Clumpy  Chinstrap 0.0758 nn       </span></span>
+<span id="cb15-13"><a href="#cb15-13" tabindex="-1"></a><span class="co">#&gt;  5 bill_depth_mm bill_length_mm    Stringy Gentoo    0.393  nn       </span></span>
+<span id="cb15-14"><a href="#cb15-14" tabindex="-1"></a><span class="co">#&gt;  6 bill_depth_mm bill_length_mm    Clumpy  Gentoo    0.0579 nn       </span></span>
+<span id="cb15-15"><a href="#cb15-15" tabindex="-1"></a><span class="co">#&gt;  7 bill_depth_mm bill_length_mm    Stringy all       0.331  nn       </span></span>
+<span id="cb15-16"><a href="#cb15-16" tabindex="-1"></a><span class="co">#&gt;  8 bill_depth_mm bill_length_mm    Clumpy  all       0.0328 nn       </span></span>
+<span id="cb15-17"><a href="#cb15-17" tabindex="-1"></a><span class="co">#&gt;  9 bill_depth_mm flipper_length_mm Stringy Adelie    0.392  nn       </span></span>
+<span id="cb15-18"><a href="#cb15-18" tabindex="-1"></a><span class="co">#&gt; 10 bill_depth_mm flipper_length_mm Clumpy  Adelie    0.0598 nn       </span></span>
+<span id="cb15-19"><a href="#cb15-19" tabindex="-1"></a><span class="co">#&gt; # ℹ 14 more rows</span></span></code></pre></div>
 </div>
 <div id="converting-symmetric-matrices-to-pairwise-and-vice-versa." class="section level2">
 <h2>Converting symmetric matrices to <code>pairwise</code> and
@@ -1227,33 +1277,33 @@ structure we use in <code>bullseye</code> is more flexible, and is
 amenable to multiple measures of association and grouped measures.</p>
 <p>It is straightforward to convert from a symmetric matrix to
 <code>pairwise</code>:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">cor</span>(penguins[, <span class="fu">c</span>(<span class="st">&quot;bill_length_mm&quot;</span>, <span class="st">&quot;bill_depth_mm&quot;</span> ,<span class="st">&quot;flipper_length_mm&quot;</span> ,<span class="st">&quot;body_mass_g&quot;</span>)], </span>
-<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>         <span class="at">use=</span> <span class="st">&quot;pairwise.complete.obs&quot;</span>)</span>
-<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a><span class="fu">pairwise</span>(x, <span class="at">score=</span><span class="st">&quot;pearson&quot;</span>, <span class="at">pair_type =</span> <span class="st">&quot;nn&quot;</span>)</span>
-<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 6</span></span>
-<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a><span class="co">#&gt;   x              y                 score   group  value pair_type</span></span>
-<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;          &lt;chr&gt;             &lt;chr&gt;   &lt;chr&gt;  &lt;dbl&gt; &lt;chr&gt;    </span></span>
-<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a><span class="co">#&gt; 1 bill_depth_mm  bill_length_mm    pearson all   -0.235 nn       </span></span>
-<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a><span class="co">#&gt; 2 bill_length_mm flipper_length_mm pearson all    0.656 nn       </span></span>
-<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a><span class="co">#&gt; 3 bill_depth_mm  flipper_length_mm pearson all   -0.584 nn       </span></span>
-<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a><span class="co">#&gt; 4 body_mass_g    flipper_length_mm pearson all    0.871 nn       </span></span>
-<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a><span class="co">#&gt; 5 bill_length_mm body_mass_g       pearson all    0.595 nn       </span></span>
-<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a><span class="co">#&gt; 6 bill_depth_mm  body_mass_g       pearson all   -0.472 nn</span></span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">cor</span>(penguins[, <span class="fu">c</span>(<span class="st">&quot;bill_length_mm&quot;</span>, <span class="st">&quot;bill_depth_mm&quot;</span> ,<span class="st">&quot;flipper_length_mm&quot;</span> ,<span class="st">&quot;body_mass_g&quot;</span>)], </span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>         <span class="at">use=</span> <span class="st">&quot;pairwise.complete.obs&quot;</span>)</span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a><span class="fu">pairwise</span>(x, <span class="at">score=</span><span class="st">&quot;pearson&quot;</span>, <span class="at">pair_type =</span> <span class="st">&quot;nn&quot;</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 6</span></span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a><span class="co">#&gt;   x              y                 score   group  value pair_type</span></span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;          &lt;chr&gt;             &lt;chr&gt;   &lt;chr&gt;  &lt;dbl&gt; &lt;chr&gt;    </span></span>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a><span class="co">#&gt; 1 bill_depth_mm  bill_length_mm    pearson all   -0.235 nn       </span></span>
+<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a><span class="co">#&gt; 2 bill_length_mm flipper_length_mm pearson all    0.656 nn       </span></span>
+<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a><span class="co">#&gt; 3 bill_depth_mm  flipper_length_mm pearson all   -0.584 nn       </span></span>
+<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a><span class="co">#&gt; 4 body_mass_g    flipper_length_mm pearson all    0.871 nn       </span></span>
+<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a><span class="co">#&gt; 5 bill_length_mm body_mass_g       pearson all    0.595 nn       </span></span>
+<span id="cb16-12"><a href="#cb16-12" tabindex="-1"></a><span class="co">#&gt; 6 bill_depth_mm  body_mass_g       pearson all   -0.472 nn</span></span></code></pre></div>
 <p>And for the reverse, converting a <code>pairwise</code> to a
 symmetric matrix:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="fu">as.matrix</span>(sc_dcor)</span>
-<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="co">#&gt;                   bill_depth_mm bill_length_mm body_mass_g flipper_length_mm</span></span>
-<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a><span class="co">#&gt; bill_depth_mm                NA     0.38720211   0.6141631         0.7039636</span></span>
-<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a><span class="co">#&gt; bill_length_mm        0.3872021             NA   0.5871319         0.6664558</span></span>
-<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a><span class="co">#&gt; body_mass_g           0.6141631     0.58713186          NA         0.8674122</span></span>
-<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a><span class="co">#&gt; flipper_length_mm     0.7039636     0.66645577   0.8674122                NA</span></span>
-<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a><span class="co">#&gt; year                  0.1117057     0.07842516   0.0790560         0.1643876</span></span>
-<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a><span class="co">#&gt;                         year</span></span>
-<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a><span class="co">#&gt; bill_depth_mm     0.11170568</span></span>
-<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a><span class="co">#&gt; bill_length_mm    0.07842516</span></span>
-<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a><span class="co">#&gt; body_mass_g       0.07905600</span></span>
-<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a><span class="co">#&gt; flipper_length_mm 0.16438763</span></span>
-<span id="cb15-13"><a href="#cb15-13" tabindex="-1"></a><span class="co">#&gt; year                      NA</span></span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="fu">as.matrix</span>(sc_dcor)</span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a><span class="co">#&gt;                   bill_depth_mm bill_length_mm body_mass_g flipper_length_mm</span></span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a><span class="co">#&gt; bill_depth_mm                NA     0.38720211   0.6141631         0.7039636</span></span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a><span class="co">#&gt; bill_length_mm        0.3872021             NA   0.5871319         0.6664558</span></span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a><span class="co">#&gt; body_mass_g           0.6141631     0.58713186          NA         0.8674122</span></span>
+<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a><span class="co">#&gt; flipper_length_mm     0.7039636     0.66645577   0.8674122                NA</span></span>
+<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a><span class="co">#&gt; year                  0.1117057     0.07842516   0.0790560         0.1643876</span></span>
+<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a><span class="co">#&gt;                         year</span></span>
+<span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a><span class="co">#&gt; bill_depth_mm     0.11170568</span></span>
+<span id="cb17-10"><a href="#cb17-10" tabindex="-1"></a><span class="co">#&gt; bill_length_mm    0.07842516</span></span>
+<span id="cb17-11"><a href="#cb17-11" tabindex="-1"></a><span class="co">#&gt; body_mass_g       0.07905600</span></span>
+<span id="cb17-12"><a href="#cb17-12" tabindex="-1"></a><span class="co">#&gt; flipper_length_mm 0.16438763</span></span>
+<span id="cb17-13"><a href="#cb17-13" tabindex="-1"></a><span class="co">#&gt; year                      NA</span></span></code></pre></div>
 <div id="converting-structures-from-package-correlation" class="section level3">
 <h3>Converting structures from package <code>correlation</code>:</h3>
 <p><code>correlation</code> package calculates different kinds of
@@ -1263,44 +1313,44 @@ bend or Sheperd’s Pi correlations, distance correlation and more. The
 output data structure is a tidy dataframe with a correlation value and
 correlation tests for variable pairs for which the correlation method is
 defined.</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>correlation<span class="sc">::</span><span class="fu">correlation</span>(penguins)</span>
-<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="co">#&gt; # Correlation Matrix (pearson-method)</span></span>
-<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a><span class="co">#&gt; Parameter1        |        Parameter2 |     r |         95% CI | t(340) |         p</span></span>
-<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a><span class="co">#&gt; -----------------------------------------------------------------------------------</span></span>
-<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a><span class="co">#&gt; bill_length_mm    |     bill_depth_mm | -0.24 | [-0.33, -0.13] |  -4.46 | &lt; .001***</span></span>
-<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a><span class="co">#&gt; bill_length_mm    | flipper_length_mm |  0.66 | [ 0.59,  0.71] |  16.03 | &lt; .001***</span></span>
-<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a><span class="co">#&gt; bill_length_mm    |       body_mass_g |  0.60 | [ 0.52,  0.66] |  13.65 | &lt; .001***</span></span>
-<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a><span class="co">#&gt; bill_length_mm    |              year |  0.05 | [-0.05,  0.16] |   1.01 | 0.797    </span></span>
-<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a><span class="co">#&gt; bill_depth_mm     | flipper_length_mm | -0.58 | [-0.65, -0.51] | -13.26 | &lt; .001***</span></span>
-<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a><span class="co">#&gt; bill_depth_mm     |       body_mass_g | -0.47 | [-0.55, -0.39] |  -9.87 | &lt; .001***</span></span>
-<span id="cb16-12"><a href="#cb16-12" tabindex="-1"></a><span class="co">#&gt; bill_depth_mm     |              year | -0.06 | [-0.17,  0.05] |  -1.11 | 0.797    </span></span>
-<span id="cb16-13"><a href="#cb16-13" tabindex="-1"></a><span class="co">#&gt; flipper_length_mm |       body_mass_g |  0.87 | [ 0.84,  0.89] |  32.72 | &lt; .001***</span></span>
-<span id="cb16-14"><a href="#cb16-14" tabindex="-1"></a><span class="co">#&gt; flipper_length_mm |              year |  0.17 | [ 0.06,  0.27] |   3.17 | 0.007**  </span></span>
-<span id="cb16-15"><a href="#cb16-15" tabindex="-1"></a><span class="co">#&gt; body_mass_g       |              year |  0.04 | [-0.06,  0.15] |   0.78 | 0.797    </span></span>
-<span id="cb16-16"><a href="#cb16-16" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb16-17"><a href="#cb16-17" tabindex="-1"></a><span class="co">#&gt; p-value adjustment method: Holm (1979)</span></span>
-<span id="cb16-18"><a href="#cb16-18" tabindex="-1"></a><span class="co">#&gt; Observations: 342</span></span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a>correlation<span class="sc">::</span><span class="fu">correlation</span>(penguins)</span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a><span class="co">#&gt; # Correlation Matrix (pearson-method)</span></span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a><span class="co">#&gt; Parameter1        |        Parameter2 |     r |         95% CI | t(340) |         p</span></span>
+<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a><span class="co">#&gt; -----------------------------------------------------------------------------------</span></span>
+<span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a><span class="co">#&gt; bill_length_mm    |     bill_depth_mm | -0.24 | [-0.33, -0.13] |  -4.46 | &lt; .001***</span></span>
+<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a><span class="co">#&gt; bill_length_mm    | flipper_length_mm |  0.66 | [ 0.59,  0.71] |  16.03 | &lt; .001***</span></span>
+<span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a><span class="co">#&gt; bill_length_mm    |       body_mass_g |  0.60 | [ 0.52,  0.66] |  13.65 | &lt; .001***</span></span>
+<span id="cb18-9"><a href="#cb18-9" tabindex="-1"></a><span class="co">#&gt; bill_length_mm    |              year |  0.05 | [-0.05,  0.16] |   1.01 | 0.797    </span></span>
+<span id="cb18-10"><a href="#cb18-10" tabindex="-1"></a><span class="co">#&gt; bill_depth_mm     | flipper_length_mm | -0.58 | [-0.65, -0.51] | -13.26 | &lt; .001***</span></span>
+<span id="cb18-11"><a href="#cb18-11" tabindex="-1"></a><span class="co">#&gt; bill_depth_mm     |       body_mass_g | -0.47 | [-0.55, -0.39] |  -9.87 | &lt; .001***</span></span>
+<span id="cb18-12"><a href="#cb18-12" tabindex="-1"></a><span class="co">#&gt; bill_depth_mm     |              year | -0.06 | [-0.17,  0.05] |  -1.11 | 0.797    </span></span>
+<span id="cb18-13"><a href="#cb18-13" tabindex="-1"></a><span class="co">#&gt; flipper_length_mm |       body_mass_g |  0.87 | [ 0.84,  0.89] |  32.72 | &lt; .001***</span></span>
+<span id="cb18-14"><a href="#cb18-14" tabindex="-1"></a><span class="co">#&gt; flipper_length_mm |              year |  0.17 | [ 0.06,  0.27] |   3.17 | 0.007**  </span></span>
+<span id="cb18-15"><a href="#cb18-15" tabindex="-1"></a><span class="co">#&gt; body_mass_g       |              year |  0.04 | [-0.06,  0.15] |   0.78 | 0.797    </span></span>
+<span id="cb18-16"><a href="#cb18-16" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb18-17"><a href="#cb18-17" tabindex="-1"></a><span class="co">#&gt; p-value adjustment method: Holm (1979)</span></span>
+<span id="cb18-18"><a href="#cb18-18" tabindex="-1"></a><span class="co">#&gt; Observations: 342</span></span></code></pre></div>
 <p>The default calculation uses Pearson correlation. Other options are
 available via the <code>method</code> argument.</p>
 <p>As there is an <code>as.matrix</code> method provided for the results
 of <code>correlation::correlation</code>, it is straightforward to
 convert this to a <code>pairwise</code> tibble.</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> correlation<span class="sc">::</span><span class="fu">correlation</span>(penguins)</span>
-<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a><span class="fu">pairwise</span>(<span class="fu">as.matrix</span>(x)) </span>
-<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a><span class="co">#&gt; # A tibble: 10 × 6</span></span>
-<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a><span class="co">#&gt;    x                 y                 score group   value pair_type</span></span>
-<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;             &lt;chr&gt;             &lt;chr&gt; &lt;chr&gt;   &lt;dbl&gt; &lt;chr&gt;    </span></span>
-<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a><span class="co">#&gt;  1 bill_depth_mm     bill_length_mm    &lt;NA&gt;  all   -0.235  &lt;NA&gt;     </span></span>
-<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a><span class="co">#&gt;  2 bill_length_mm    flipper_length_mm &lt;NA&gt;  all    0.656  &lt;NA&gt;     </span></span>
-<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a><span class="co">#&gt;  3 bill_depth_mm     flipper_length_mm &lt;NA&gt;  all   -0.584  &lt;NA&gt;     </span></span>
-<span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a><span class="co">#&gt;  4 body_mass_g       flipper_length_mm &lt;NA&gt;  all    0.871  &lt;NA&gt;     </span></span>
-<span id="cb17-10"><a href="#cb17-10" tabindex="-1"></a><span class="co">#&gt;  5 bill_length_mm    body_mass_g       &lt;NA&gt;  all    0.595  &lt;NA&gt;     </span></span>
-<span id="cb17-11"><a href="#cb17-11" tabindex="-1"></a><span class="co">#&gt;  6 bill_depth_mm     body_mass_g       &lt;NA&gt;  all   -0.472  &lt;NA&gt;     </span></span>
-<span id="cb17-12"><a href="#cb17-12" tabindex="-1"></a><span class="co">#&gt;  7 bill_length_mm    year              &lt;NA&gt;  all    0.0545 &lt;NA&gt;     </span></span>
-<span id="cb17-13"><a href="#cb17-13" tabindex="-1"></a><span class="co">#&gt;  8 bill_depth_mm     year              &lt;NA&gt;  all   -0.0604 &lt;NA&gt;     </span></span>
-<span id="cb17-14"><a href="#cb17-14" tabindex="-1"></a><span class="co">#&gt;  9 flipper_length_mm year              &lt;NA&gt;  all    0.170  &lt;NA&gt;     </span></span>
-<span id="cb17-15"><a href="#cb17-15" tabindex="-1"></a><span class="co">#&gt; 10 body_mass_g       year              &lt;NA&gt;  all    0.0422 &lt;NA&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> correlation<span class="sc">::</span><span class="fu">correlation</span>(penguins)</span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a><span class="fu">pairwise</span>(<span class="fu">as.matrix</span>(x)) </span>
+<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a><span class="co">#&gt; # A tibble: 10 × 6</span></span>
+<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a><span class="co">#&gt;    x                 y                 score group   value pair_type</span></span>
+<span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;             &lt;chr&gt;             &lt;chr&gt; &lt;chr&gt;   &lt;dbl&gt; &lt;chr&gt;    </span></span>
+<span id="cb19-6"><a href="#cb19-6" tabindex="-1"></a><span class="co">#&gt;  1 bill_depth_mm     bill_length_mm    &lt;NA&gt;  all   -0.235  &lt;NA&gt;     </span></span>
+<span id="cb19-7"><a href="#cb19-7" tabindex="-1"></a><span class="co">#&gt;  2 bill_length_mm    flipper_length_mm &lt;NA&gt;  all    0.656  &lt;NA&gt;     </span></span>
+<span id="cb19-8"><a href="#cb19-8" tabindex="-1"></a><span class="co">#&gt;  3 bill_depth_mm     flipper_length_mm &lt;NA&gt;  all   -0.584  &lt;NA&gt;     </span></span>
+<span id="cb19-9"><a href="#cb19-9" tabindex="-1"></a><span class="co">#&gt;  4 body_mass_g       flipper_length_mm &lt;NA&gt;  all    0.871  &lt;NA&gt;     </span></span>
+<span id="cb19-10"><a href="#cb19-10" tabindex="-1"></a><span class="co">#&gt;  5 bill_length_mm    body_mass_g       &lt;NA&gt;  all    0.595  &lt;NA&gt;     </span></span>
+<span id="cb19-11"><a href="#cb19-11" tabindex="-1"></a><span class="co">#&gt;  6 bill_depth_mm     body_mass_g       &lt;NA&gt;  all   -0.472  &lt;NA&gt;     </span></span>
+<span id="cb19-12"><a href="#cb19-12" tabindex="-1"></a><span class="co">#&gt;  7 bill_length_mm    year              &lt;NA&gt;  all    0.0545 &lt;NA&gt;     </span></span>
+<span id="cb19-13"><a href="#cb19-13" tabindex="-1"></a><span class="co">#&gt;  8 bill_depth_mm     year              &lt;NA&gt;  all   -0.0604 &lt;NA&gt;     </span></span>
+<span id="cb19-14"><a href="#cb19-14" tabindex="-1"></a><span class="co">#&gt;  9 flipper_length_mm year              &lt;NA&gt;  all    0.170  &lt;NA&gt;     </span></span>
+<span id="cb19-15"><a href="#cb19-15" tabindex="-1"></a><span class="co">#&gt; 10 body_mass_g       year              &lt;NA&gt;  all    0.0422 &lt;NA&gt;</span></span></code></pre></div>
 </div>
 </div>
 
